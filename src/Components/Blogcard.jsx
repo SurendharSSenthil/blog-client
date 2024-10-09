@@ -1,49 +1,107 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaHeart, FaThumbsDown } from 'react-icons/fa';
+import { url } from '../url'; // Assuming you have a config for API base URL
 
-export default function Blogcard({ post }) {
+export default function Blogcard({ post, userToken }) {
 	const navigate = useNavigate();
 
-	// State to manage likes and dislikes
-	const [likes, setLikes] = useState(0);
-	const [dislikes, setDislikes] = useState(0);
+	// State to manage likes and dislikes from backend data
+	const [likes, setLikes] = useState(post.likes.length);
+	const [dislikes, setDislikes] = useState(post.dislikes.length);
 	const [hasLiked, setHasLiked] = useState(false);
 	const [hasDisliked, setHasDisliked] = useState(false);
 
-	// Handle like button click
-	const handleLike = () => {
-		if (!hasLiked) {
-			setLikes(likes + 1);
-			setHasLiked(true);
-			if (hasDisliked) {
-				setDislikes(dislikes - 1);
-				setHasDisliked(false);
+	// Check if the user has already liked/disliked the post
+	useEffect(() => {
+		if (userToken) {
+			const userId = userToken.userId; // Assuming userToken contains userId
+			setHasLiked(post.likes.includes(userId));
+			setHasDisliked(post.dislikes.includes(userId));
+		}
+	}, [post, userToken]);
+
+	// Function to like a post
+	const handleLike = async () => {
+		try {
+			if (!hasLiked) {
+				const res = await fetch(`${url}/like`, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						Authorization: `Bearer ${userToken.token}`, // Assuming you pass token for protected routes
+					},
+					body: JSON.stringify({ postId: post._id }),
+				});
+				if (res.ok) {
+					setLikes(likes + 1);
+					setHasLiked(true);
+					if (hasDisliked) {
+						setDislikes(dislikes - 1);
+						setHasDisliked(false);
+					}
+				}
+			} else {
+				const res = await fetch(`${url}/unlike`, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						Authorization: `Bearer ${userToken.token}`,
+					},
+					body: JSON.stringify({ postId: post._id }),
+				});
+				if (res.ok) {
+					setLikes(likes - 1);
+					setHasLiked(false);
+				}
 			}
-		} else {
-			setLikes(likes - 1);
-			setHasLiked(false);
+		} catch (err) {
+			console.error('Error liking the post:', err);
 		}
 	};
 
-	// Handle dislike button click
-	const handleDislike = () => {
-		if (!hasDisliked) {
-			setDislikes(dislikes + 1);
-			setHasDisliked(true);
-			if (hasLiked) {
-				setLikes(likes - 1);
-				setHasLiked(false);
+	// Function to dislike a post
+	const handleDislike = async () => {
+		try {
+			if (!hasDisliked) {
+				const res = await fetch(`${url}/dislike`, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						Authorization: `Bearer ${userToken.token}`,
+					},
+					body: JSON.stringify({ postId: post._id }),
+				});
+				if (res.ok) {
+					setDislikes(dislikes + 1);
+					setHasDisliked(true);
+					if (hasLiked) {
+						setLikes(likes - 1);
+						setHasLiked(false);
+					}
+				}
+			} else {
+				const res = await fetch(`${url}/undislike`, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						Authorization: `Bearer ${userToken.token}`,
+					},
+					body: JSON.stringify({ postId: post._id }),
+				});
+				if (res.ok) {
+					setDislikes(dislikes - 1);
+					setHasDisliked(false);
+				}
 			}
-		} else {
-			setDislikes(dislikes - 1);
-			setHasDisliked(false);
+		} catch (err) {
+			console.error('Error disliking the post:', err);
 		}
 	};
 
 	// Navigate to post details when "Read More" is clicked
 	const handleReadMore = () => {
-		navigate(`/post/${post.id}`);
+		navigate(`/post/${post._id}`);
 	};
 
 	return (

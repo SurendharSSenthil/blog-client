@@ -1,11 +1,14 @@
-import './App.css';
-import Home from './Pages/Home.jsx';
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import PostDetails from './Components/Blog';
+import Home from './Pages/Home';
 
 function App() {
 	return (
-		<div className='App'>
-			<Home />
-		</div>
+		<Routes>
+			<Route path='/' element={<Home />} />
+			<Route path='/post/:postId' element={<PostDetails />} />
+		</Routes>
 	);
 }
 
