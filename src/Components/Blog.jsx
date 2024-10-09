@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { FaHeart, FaThumbsDown } from 'react-icons/fa';
+import { Avatar } from 'flowbite-react';
 import { url } from '../url';
 
 function PostDetails() {
@@ -12,27 +13,31 @@ function PostDetails() {
 	const [hasLiked, setHasLiked] = useState(false);
 	const [hasDisliked, setHasDisliked] = useState(false);
 	const [newComment, setNewComment] = useState('');
+	const [loading, setLoading] = useState(true); // New loading state
+	const [error, setError] = useState(null); // New error state
+	const [commentLoading, setCommentLoading] = useState(false); // Loading for comments
 
 	// Fetch post data and comments
 	useEffect(() => {
 		async function fetchPost() {
+			setLoading(true); // Show loading state
 			try {
 				const response = await fetch(`${url}/post/post/${postId}`);
 				const data = await response.json();
-
-				if (data.length > 0) {
-					const postData = data[0];
-					setPost(postData);
+				if (data) {
+					const postData = data;
+					setPost(postData.posts[0]);
 					setComments(postData.comments || []);
-					setLikes(postData.likes?.length || 0);
-					setDislikes(postData.dislikes?.length || 0);
-					// Check if the current user has liked/disliked the post
+					setLikes(postData.posts[0].likes?.length || 0);
+					setDislikes(postData.posts[0].dislikes?.length || 0);
 					const currentUserId = '667e51f194b680166eaaae20'; // Example user ID
-					setHasLiked(postData.likes.includes(currentUserId));
-					setHasDisliked(postData.dislikes.includes(currentUserId));
+					setHasLiked(postData.posts[0].likes.includes(currentUserId));
+					setHasDisliked(postData.posts[0].dislikes.includes(currentUserId));
 				}
 			} catch (err) {
-				console.error('Error fetching post:', err);
+				setError('Error loading the post data.');
+			} finally {
+				setLoading(false); // Stop loading state
 			}
 		}
 		fetchPost();
@@ -62,7 +67,7 @@ function PostDetails() {
 				}
 			}
 		} catch (err) {
-			console.error('Error liking post:', err);
+			setError('Error processing your request.');
 		}
 	};
 
@@ -90,15 +95,14 @@ function PostDetails() {
 				}
 			}
 		} catch (err) {
-			console.error('Error disliking post:', err);
+			setError('Error processing your request.');
 		}
 	};
 
 	// Handle adding a new comment
 	const handleAddComment = async () => {
-		if (!newComment.trim()) {
-			return; // Prevent adding empty comments
-		}
+		if (!newComment.trim()) return;
+		setCommentLoading(true); // Set loading while adding comment
 		try {
 			const response = await fetch(`${url}/comments/comment`, {
 				method: 'POST',
@@ -109,31 +113,36 @@ function PostDetails() {
 					userId: '667e51f194b680166eaaae20',
 				}),
 			});
+
 			if (response.ok) {
 				const data = await response.json();
-				setComments([...comments, data]);
+				setComments([...comments, [data]]);
 				setNewComment('');
 			} else {
-				console.error('Failed to add comment:', response.statusText);
+				setError('Failed to add comment.');
 			}
 		} catch (err) {
-			console.error('Error adding comment:', err);
+			setError('Error adding comment.');
+		} finally {
+			setCommentLoading(false);
 		}
 	};
 
-	// Handle like action for comment
-	const handleLikeComment = async (commentId) => {
-		try {
-			await fetch(`${url}/comments/like`, {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ commentId, userId: '667e51f194b680166eaaae20' }),
-			});
-			// You can update the specific comment's likes count here if needed
-		} catch (err) {
-			console.error('Error liking comment:', err);
-		}
-	};
+	if (loading) {
+		return (
+			<div className='flex justify-center items-center min-h-screen bg-gray-900 text-white'>
+				<p>Loading post...</p>
+			</div>
+		);
+	}
+
+	if (error) {
+		return (
+			<div className='flex justify-center items-center min-h-screen bg-gray-900 text-red-500'>
+				<p>{error}</p>
+			</div>
+		);
+	}
 
 	return (
 		<div className='container mx-auto bg-slate-900 overflow-hidden min-h-screen'>
@@ -147,7 +156,10 @@ function PostDetails() {
 					<h1 className='md:text-4xl text-2xl poppins font-semibold text-violet-500 text-center my-4'>
 						{post.title}
 					</h1>
-					<p className='text-white mb-4 text-justify'>{post.content}</p>
+					<p
+						className='text-white mb-4 text-justify'
+						dangerouslySetInnerHTML={{ __html: post.content }}
+					/>
 
 					{/* Display likes and dislikes */}
 					<div className='flex items-center mb-4 space-x-4'>
@@ -156,6 +168,7 @@ function PostDetails() {
 								hasLiked ? 'text-red-500' : 'text-gray-400'
 							}`}
 							onClick={handleLike}
+							disabled={loading}
 						>
 							<FaHeart />
 							<span>{likes} likes</span>
@@ -165,6 +178,7 @@ function PostDetails() {
 								hasDisliked ? 'text-blue-500' : 'text-gray-400'
 							}`}
 							onClick={handleDislike}
+							disabled={loading}
 						>
 							<FaThumbsDown />
 							<span>{dislikes} dislikes</span>
@@ -182,26 +196,30 @@ function PostDetails() {
 						<button
 							className='bg-violet-500 text-white px-4 py-2 rounded-lg mt-2'
 							onClick={handleAddComment}
+							disabled={commentLoading}
 						>
-							Post Comment
+							{commentLoading ? 'Posting...' : 'Post Comment'}
 						</button>
 					</div>
 
 					{/* Display comments */}
 					<div className='bg-slate-800 p-4 rounded-lg'>
-						<h2 className='text-2xl font-bold text-white mb-2'>Comments</h2>
+						<h2 className='text-xl font-semibold text-violet-400 text-center mb-2'>
+							Comments
+						</h2>
 						{comments.length > 0 ? (
 							<ul>
 								{comments.map((comment) => (
-									<li key={comment._id} className='text-white mb-2'>
-										<p>{comment.content}</p>
-										<small>by {comment.author?.username || 'Unknown'}</small>
-										<button
-											className='text-red-500 ml-4'
-											onClick={() => handleLikeComment(comment._id)}
-										>
-											<FaHeart /> Like
-										</button>
+									<li key={comment[0]?._id} className='text-white mb-2'>
+										<div className='flex flex-row gap-2 items-center'>
+											<Avatar rounded />
+											<p className='text-gray-100 md:text-lg text-sm'>
+												{comment[0]?.content}
+											</p>
+										</div>
+										<small className='text-xs text-gray-400'>
+											by {comment[0]?.author || 'Unknown'}
+										</small>
 									</li>
 								))}
 							</ul>

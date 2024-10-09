@@ -24,8 +24,8 @@ function Header() {
 				<Navbar.Link href='/about' className='text-white'>
 					About
 				</Navbar.Link>
-				<Navbar.Link href='/contact' className='text-white'>
-					Contact
+				<Navbar.Link href='/create' className='text-white'>
+					Create
 				</Navbar.Link>
 			</Navbar.Collapse>
 		</Navbar>

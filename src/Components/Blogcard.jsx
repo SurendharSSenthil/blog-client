@@ -112,8 +112,13 @@ export default function Blogcard({ post, userToken }) {
 				className='w-full h-48 object-cover'
 			/>
 			<div className='p-4 flex-1 flex flex-col justify-between'>
-				<h2 className='text-lg font-semibold text-white mb-2'>{post.title}</h2>
-				<p className='text-white mb-4'>{post.content.substring(0, 100)}...</p>
+				<h2 className='text-lg font-semibold text-teal-500 mb-2'>
+					{post.title}
+				</h2>
+				<p
+					className='text-white mb-4'
+					dangerouslySetInnerHTML={{ __html: post.content.substring(0, 100) }}
+				/>
 				<div className='flex items-center space-x-4 mb-4'>
 					<button
 						onClick={handleLike}
