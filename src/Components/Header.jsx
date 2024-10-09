@@ -18,9 +18,6 @@ function Header() {
 				<Navbar.Link href='/' active={true} className='text-white'>
 					Home
 				</Navbar.Link>
-				<Navbar.Link href='/blog' className='text-white'>
-					Blog
-				</Navbar.Link>
 				<Navbar.Link href='/about' className='text-white'>
 					About
 				</Navbar.Link>

@@ -107,7 +107,7 @@ export default function Blogcard({ post, userToken }) {
 	return (
 		<div className='bg-slate-900 shadow-lg rounded-lg overflow-hidden flex flex-col z-[49]'>
 			<img
-				src='https://picsum.photos/400/300'
+				src={post.imageUrl || 'https://picsum.photos/400/300'}
 				alt='Blog Image'
 				className='w-full h-48 object-cover'
 			/>

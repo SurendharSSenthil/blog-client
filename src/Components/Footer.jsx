@@ -1,27 +1,10 @@
 import { Footer } from 'flowbite-react';
-import {
-	BsDribbble,
-	BsFacebook,
-	BsGithub,
-	BsInstagram,
-	BsTwitter,
-} from 'react-icons/bs';
+import { BsLinkedin, BsGithub, BsInstagram, BsTwitter } from 'react-icons/bs';
 
 export default function Component() {
 	return (
-		<Footer bgDark>
+		<Footer bgDark className='mt-16'>
 			<div className='w-full z-[70]'>
-				<div className='grid w-full grid-cols-2 gap-8 px-6 py-8 md:grid-cols-4'>
-					<div>
-						<Footer.Title title='help center' />
-						<Footer.LinkGroup col>
-							<Footer.Link href='#'>Discord Server</Footer.Link>
-							<Footer.Link href='#'>Twitter</Footer.Link>
-							<Footer.Link href='#'>Facebook</Footer.Link>
-							<Footer.Link href='#'>Contact Us</Footer.Link>
-						</Footer.LinkGroup>
-					</div>
-				</div>
 				<div className='w-full bg-gray-700 px-4 py-6 sm:flex sm:items-center sm:justify-between '>
 					<Footer.Copyright
 						href='#'
@@ -30,11 +13,26 @@ export default function Component() {
 						className='text-white'
 					/>
 					<div className='mt-4 flex space-x-6 sm:mt-0 sm:justify-center'>
-						<Footer.Icon href='#' icon={BsFacebook} />
-						<Footer.Icon href='#' icon={BsInstagram} />
-						<Footer.Icon href='#' icon={BsTwitter} />
-						<Footer.Icon href='#' icon={BsGithub} />
-						<Footer.Icon href='#' icon={BsDribbble} />
+						<Footer.Icon
+							href='https://www.linkedin.com/in/surendhar-senthil-574710286/'
+							target='_blank'
+							icon={BsLinkedin}
+						/>
+						<Footer.Icon
+							href='https://www.instagram.com/surendhar3525'
+							target='_blank'
+							icon={BsInstagram}
+						/>
+						<Footer.Icon
+							href='https://x.com/SurendharS05'
+							target='_blank'
+							icon={BsTwitter}
+						/>
+						<Footer.Icon
+							href='https://github.com/SurendharSSenthil/'
+							target='_blank'
+							icon={BsGithub}
+						/>
 					</div>
 				</div>
 			</div>

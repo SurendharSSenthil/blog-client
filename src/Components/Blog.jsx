@@ -148,7 +148,7 @@ function PostDetails() {
 		<div className='container mx-auto bg-slate-900 overflow-hidden min-h-screen'>
 			<div className='shadow-lg md:px-16 md:py-6 p-6'>
 				<img
-					src='https://picsum.photos/800/400'
+					src={post.imageUrl || 'https://picsum.photos/800/400'}
 					alt='Blog Image'
 					className='w-full h-60 object-fit rounded-lg'
 				/>
