@@ -164,14 +164,14 @@ function PostDetails() {
 	}
 
 	return (
-		<div className='w-full  bg-slate-900 min-h-screen'>
+		<div className='w-full  bg-slate-900 min-h-screen overflow-x-hidden'>
 			<Header />
 			{loading ? (
 				<div className='flex justify-center items-center h-96'>
 					<Spinner color='purple' size='xl' />
 				</div>
 			) : (
-				<div className='shadow-lg md:px-16 md:py-6 p-6 mx-auto'>
+				<div className='shadow-lg md:px-16 md:py-16 py-20 px-6 mx-auto'>
 					<img
 						src={post.imageUrl || 'https://picsum.photos/800/400'}
 						alt='Blog Image'
