@@ -1,30 +1,32 @@
 import React from 'react';
 import Profile from '../assets/profile.jpg';
 import Header from '../Components/Header';
+import ParticlesBackground from '../Components/ParticlesBackground';
 
 function About() {
 	return (
 		<div className=' min-h-screen bg-slate-900 text-white '>
+			<ParticlesBackground />
 			<Header />
-			<div className='pt-12 pb-4 mx-4'>
-				<div className='container md:px-16 px-6 py-4 md:py-10 shadow-lg rounded-lg bg-slate-800'>
+			<div className='pt-16 pb-4 mx-4'>
+				<div className='md:px-16 px-6 py-4 md:py-10 shadow-lg rounded-lg bg-slate-800'>
 					<h1 className='md:text-4xl text-2xl poppins font-semibold text-white text-center mb-4 poppins'>
 						About My<span className='text-violet-500'>Verse 🌍</span>
 					</h1>
-					<p className='text-gray-300 md:text-lg text-sm leading-relaxed mb-6'>
+					<p className='text-gray-100 md:text-lg text-sm leading-relaxed mb-6'>
 						Welcome to <span className='text-violet-500'>MyVerse</span>! This is
 						a place where I share my journey as a budding full-stack developer,
 						my learnings, challenges, and insights into the world of full stack
 						development.
 					</p>
-					<p className='text-gray-300 md:text-lg text-sm leading-relaxed mb-6'>
+					<p className='text-gray-100 md:text-lg text-sm leading-relaxed mb-6'>
 						As a prefinal-year Computer Science student with a passion for
 						learning and building, I created this blog to document my
 						experiences and to connect with like-minded individuals. I'm
 						constantly exploring new frontiers in full-stack development from
 						building web apps.
 					</p>
-					<p className='text-gray-300 md:text-lg text-sm leading-relaxed'>
+					<p className='text-gray-100 md:text-lg text-sm leading-relaxed'>
 						Feel free to explore, engage with the content, and share your
 						thoughts in the comments section. I appreciate all the support and
 						look forward to growing together as we navigate the ever-evolving

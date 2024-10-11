@@ -6,17 +6,23 @@ const Header = () => {
 	const location = useLocation();
 	const navigate = useNavigate();
 	const [islog, setIslog] = useState(false);
+	const [role, setRole] = useState(null);
 
 	const isActive = (path) => location.pathname === path;
 
 	useEffect(() => {
 		const token = localStorage.getItem('token');
+		const user = JSON.parse(localStorage.getItem('user'));
+		const userRole = user?.role;
 		setIslog(!!token);
+		setRole(userRole);
 	}, []);
 
 	const signOut = () => {
 		localStorage.removeItem('token');
+		localStorage.removeItem('user');
 		setIslog(false);
+		setRole(null);
 	};
 
 	return (
@@ -54,24 +60,29 @@ const Header = () => {
 				>
 					About
 				</Navbar.Link>
-				<Navbar.Link
-					href='/create'
-					className={`text-white ${
-						isActive('/create') ? 'text-violet-500' : ''
-					}`}
-				>
-					Create
-				</Navbar.Link>
+
+				{islog && role === 'A' && (
+					<Navbar.Link
+						href='/create'
+						className={`text-white ${
+							isActive('/create') ? 'text-violet-500' : ''
+						}`}
+					>
+						Create
+					</Navbar.Link>
+				)}
+
 				{!islog && (
 					<Navbar.Link
 						href='/auth'
-						className={`text-white  my-auto ${
+						className={`text-white my-auto ${
 							isActive('/auth') ? 'text-violet-500' : ''
 						}`}
 					>
 						Login
 					</Navbar.Link>
 				)}
+
 				{islog && (
 					<Button
 						onClick={signOut}

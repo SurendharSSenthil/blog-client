@@ -17,7 +17,7 @@ function CreatePost() {
 		const token = localStorage.getItem('token');
 		const user = JSON.parse(localStorage.getItem('user'));
 		if (!user || !user.role === 'A') {
-			return;
+			navigate('/');
 		}
 		if (!token) {
 			navigate('/auth');
