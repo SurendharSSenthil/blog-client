@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { url } from '../url';
 import 'react-quill/dist/quill.snow.css';
@@ -12,28 +12,56 @@ function CreatePost() {
 	const [imageUrl, setImageUrl] = useState('');
 	const navigate = useNavigate();
 
+	// Check if token exists, otherwise redirect to login
+	useEffect(() => {
+		const token = localStorage.getItem('token');
+		const user = JSON.parse(localStorage.getItem('user'));
+		if (!user || !user.role === 'A') {
+			return;
+		}
+		if (!token) {
+			navigate('/auth');
+		}
+	}, [navigate]);
+
 	// Handle post submission
 	const handleSubmit = async () => {
+		const token = localStorage.getItem('token'); // Get token from local storage
+		const user = JSON.parse(localStorage.getItem('user'));
+		// Check for missing fields
 		if (!title || !content) {
 			alert('Please provide both title and content.');
 			return;
 		}
+
+		// If no token, redirect to login page
+		if (!token) {
+			navigate('/auth');
+			return;
+		}
+
 		try {
+			// Send post data to the backend API with authorization header
 			const response = await fetch(`${url}/post/posts`, {
 				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: `Bearer ${token}`,
+				},
 				body: JSON.stringify({
 					title,
 					content,
 					imageUrl,
-					userId: '667e51f194b680166eaaae20',
+					userId: user._id,
 				}),
 			});
 
 			if (response.ok) {
-				navigate('/');
+				navigate(-1);
 			} else {
-				console.error('Failed to create post:', response.statusText);
+				const errorData = await response.json();
+				console.error('Failed to create post:', errorData.message);
+				alert(`Error: ${errorData.message}`);
 			}
 		} catch (err) {
 			console.error('Error creating post:', err);

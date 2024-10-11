@@ -116,28 +116,39 @@ export default function Blogcard({ post, userToken }) {
 					{post.title}
 				</h2>
 				<p
-					className='text-white mb-4'
-					dangerouslySetInnerHTML={{ __html: post.content.substring(0, 100) }}
+					className='text-white mb-4 md:text-md text-sm'
+					dangerouslySetInnerHTML={{
+						__html: `${post.content.substring(0, 110)}...`,
+					}}
 				/>
-				<div className='flex items-center space-x-4 mb-4'>
-					<button
-						onClick={handleLike}
-						className={`flex items-center space-x-1 ${
-							hasLiked ? 'text-red-500' : 'text-gray-400'
-						} hover:text-red-500 transition`}
-					>
-						<FaHeart />
-						<span>{likes}</span>
-					</button>
-					<button
-						onClick={handleDislike}
-						className={`flex items-center space-x-1 ${
-							hasDisliked ? 'text-blue-500' : 'text-gray-400'
-						} hover:text-blue-500 transition`}
-					>
-						<FaThumbsDown />
-						<span>{dislikes}</span>
-					</button>
+				<div className='flex items-center justify-between space-x-4 mb-4'>
+					<div className='flex flex-row gap-3 items-center'>
+						<button
+							onClick={handleLike}
+							className={`flex items-center space-x-1 ${
+								hasLiked ? 'text-red-500' : 'text-gray-400'
+							} hover:text-red-500 transition`}
+						>
+							<FaHeart />
+							<span>{likes}</span>
+						</button>
+						<button
+							onClick={handleDislike}
+							className={`flex items-center space-x-1 ${
+								hasDisliked ? 'text-blue-500' : 'text-gray-400'
+							} hover:text-blue-500 transition`}
+						>
+							<FaThumbsDown />
+							<span>{dislikes}</span>
+						</button>
+					</div>
+					<span className='text-gray-400 text-xs hover:text-violet-400'>
+						{new Date(post.createdAt).toLocaleString('en-US', {
+							year: 'numeric',
+							month: 'long',
+							day: 'numeric',
+						})}
+					</span>
 				</div>
 				<button
 					className='bg-violet-500 text-white py-2 px-4 rounded-lg hover:bg-violet-600 transition'

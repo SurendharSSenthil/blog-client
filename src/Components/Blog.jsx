@@ -21,11 +21,17 @@ function PostDetails() {
 	const [error, setError] = useState(null);
 	const [commentLoading, setCommentLoading] = useState(false);
 	const [notification, setNotification] = useState(null);
-
+	const user = JSON.parse(localStorage.getItem('user'));
 	async function fetchPost() {
+		const token = localStorage.getItem('token');
+		const user = JSON.parse(localStorage.getItem('user'));
 		setLoading(true); // Show loading state
 		try {
-			const response = await fetch(`${url}/post/post/${postId}`);
+			const response = await fetch(`${url}/post/post/${postId}`, {
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
 			const data = await response.json();
 			if (data) {
 				const postData = data;
@@ -33,7 +39,7 @@ function PostDetails() {
 				setComments(postData.comments || []);
 				setLikes(postData.posts[0].likes?.length || 0);
 				setDislikes(postData.posts[0].dislikes?.length || 0);
-				const currentUserId = '667e51f194b680166eaaae20'; // Example user ID
+				const currentUserId = user._id; // Example user ID
 				setHasLiked(postData.posts[0].likes.includes(currentUserId));
 				setHasDisliked(postData.posts[0].dislikes.includes(currentUserId));
 			}
@@ -50,12 +56,19 @@ function PostDetails() {
 
 	// Handle like action for post
 	const handleLike = async () => {
+		const token = localStorage.getItem('token');
+		if (!token) {
+			navigate('/auth');
+		}
 		try {
 			const action = hasLiked ? 'unlike' : 'like';
 			const response = await fetch(`${url}/post/${action}`, {
 				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ postId, userId: '667e51f194b680166eaaae20' }),
+				headers: {
+					Authorization: `Bearer ${token}`,
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({ postId }),
 			});
 
 			if (response.ok) {
@@ -78,12 +91,19 @@ function PostDetails() {
 
 	// Handle dislike action for post
 	const handleDislike = async () => {
+		const token = localStorage.getItem('token');
+		if (!token) {
+			navigate('/auth');
+		}
 		try {
 			const action = hasDisliked ? 'like' : 'unlike';
 			const response = await fetch(`${url}/post/${action}`, {
 				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ postId, userId: '667e51f194b680166eaaae20' }),
+				headers: {
+					Authorization: `Bearer ${token}`,
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({ postId }),
 			});
 
 			if (response.ok) {
@@ -107,36 +127,64 @@ function PostDetails() {
 	// Handle adding a new comment
 	const handleAddComment = async () => {
 		if (!newComment.trim()) return;
+		const token = localStorage.getItem('token');
+		if (!token) {
+			navigate('/auth');
+			return; // Exit early if there's no token
+		}
+
+		const userData = JSON.parse(localStorage.getItem('user'));
+		console.log(userData);
+		const userId = userData ? userData._id : null;
+		console.log(userId);
 		setCommentLoading(true); // Set loading while adding comment
+
 		try {
 			const response = await fetch(`${url}/comments/comment`, {
 				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
+				headers: {
+					Authorization: `Bearer ${token}`,
+					'Content-Type': 'application/json',
+				},
 				body: JSON.stringify({
 					postId,
 					content: newComment,
-					userId: '667e51f194b680166eaaae20',
+					userId,
 				}),
 			});
 
+			// Log the response status and text
+			console.log('Response Status:', response.status);
+			const responseText = await response.text(); // Get the raw response text
+			console.log('Response Text:', responseText); // Log the raw text response
+
 			if (response.ok) {
-				const data = await response.json();
+				const data = JSON.parse(responseText); // Parse the JSON only if response is OK
 				fetchPost();
 				setNewComment('');
 			} else {
 				setError('Failed to add comment.');
 			}
 		} catch (err) {
+			console.error('Error adding comment:', err);
 			setError('Error adding comment.');
 		} finally {
 			setCommentLoading(false);
 		}
 	};
 
+	// Handle deleting the post
 	const handleDelete = async () => {
+		const token = localStorage.getItem('token');
+		if (!token) {
+			navigate('/auth');
+		}
 		try {
 			const response = await fetch(`${url}/post/${postId}`, {
 				method: 'DELETE',
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
 			});
 			if (response.ok) {
 				setNotification('Post deleted successfully.');
@@ -185,12 +233,15 @@ function PostDetails() {
 							className='text-white mb-4 text-justify'
 							dangerouslySetInnerHTML={{ __html: post.content }}
 						/>
-						<button
-							className='bg-violet-500 text-white px-4 py-2 rounded-lg my-2'
-							onClick={handleDelete}
-						>
-							Delete Post
-						</button>
+						{user?.role === 'A' && (
+							<button
+								className='bg-violet-500 text-white px-4 py-2 rounded-lg my-2'
+								onClick={handleDelete}
+							>
+								Delete Post
+							</button>
+						)}
+
 						{/* Display likes and dislikes */}
 						<div className='flex items-center mb-4 space-x-4'>
 							<button
@@ -244,11 +295,11 @@ function PostDetails() {
 											<div className='flex flex-row gap-2 items-center'>
 												<Avatar rounded />
 												<p className='text-gray-100 md:text-lg text-sm'>
-													{comment[0]?.content}
+													{comment?.res[0]?.content}
 												</p>
 											</div>
 											<small className='text-xs text-gray-400'>
-												by {comment[0]?.author || 'Unknown'}
+												by {comment?.user[0]?.username || 'Unknown'}
 											</small>
 										</li>
 									))}

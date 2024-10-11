@@ -5,6 +5,7 @@ import Home from './Pages/Home';
 import CreatePost from './Pages/Create';
 import About from './Pages/About';
 import AllBlogs from './Pages/AllBlogs';
+import Auth from './Pages/Login';
 
 function App() {
 	const title = 'MyVerse | Surendhar';
@@ -50,6 +51,7 @@ function App() {
 			<Route path='/blogs' element={<AllBlogs />} />
 			<Route path='/create' element={<CreatePost />} />
 			<Route path='/about' element={<About />} />
+			<Route path='/auth' element={<Auth />} />
 			<Route path='/post/:postId' element={<PostDetails />} />
 		</Routes>
 	);

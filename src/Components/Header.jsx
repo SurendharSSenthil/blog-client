@@ -1,13 +1,22 @@
-import React from 'react';
-import { Navbar } from 'flowbite-react';
-import { useLocation } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Button, Navbar } from 'flowbite-react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
-function Header() {
+const Header = () => {
 	const location = useLocation();
+	const navigate = useNavigate();
+	const [islog, setIslog] = useState(false);
 
-	// Function to check if the current path matches the link
-	const isActive = (path) => {
-		return location.pathname === path;
+	const isActive = (path) => location.pathname === path;
+
+	useEffect(() => {
+		const token = localStorage.getItem('token');
+		setIslog(!!token);
+	}, []);
+
+	const signOut = () => {
+		localStorage.removeItem('token');
+		setIslog(false);
 	};
 
 	return (
@@ -53,9 +62,27 @@ function Header() {
 				>
 					Create
 				</Navbar.Link>
+				{!islog && (
+					<Navbar.Link
+						href='/auth'
+						className={`text-white  my-auto ${
+							isActive('/auth') ? 'text-violet-500' : ''
+						}`}
+					>
+						Login
+					</Navbar.Link>
+				)}
+				{islog && (
+					<Button
+						onClick={signOut}
+						className='h-7 md:mt-0 mt-4 bg-violet-500 hover:bg-violet-400 duration-150 flex flex-col items-center'
+					>
+						LogOut
+					</Button>
+				)}
 			</Navbar.Collapse>
 		</Navbar>
 	);
-}
+};
 
 export default Header;
