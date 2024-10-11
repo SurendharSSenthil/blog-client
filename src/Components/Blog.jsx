@@ -212,7 +212,7 @@ function PostDetails() {
 	}
 
 	return (
-		<div className='w-full  bg-slate-900 min-h-screen overflow-x-hidden'>
+		<div className='w-full  bg-slate-900 min-h-screen overflow-x-hidden flex flex-col justify-between'>
 			<Header />
 			{loading ? (
 				<div className='flex justify-center items-center h-96'>
