@@ -26,18 +26,9 @@ function PostDetails() {
 		const token = localStorage.getItem('token');
 		const user = JSON.parse(localStorage.getItem('user'));
 
-		if (!token || !user) {
-			setError('Token or user data is missing.');
-			return; // Prevent further execution
-		}
-
-		setLoading(true); // Show loading state
+		setLoading(true);
 		try {
-			const response = await fetch(`${url}/post/post/${postId}`, {
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-			});
+			const response = await fetch(`${url}/post/post/${postId}`);
 			const data = await response.json();
 
 			if (!response.ok) {
