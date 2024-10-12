@@ -42,7 +42,7 @@ function PostDetails() {
 				setLikes(postData.posts[0].likes?.length || 0);
 				setDislikes(postData.posts[0].dislikes?.length || 0);
 
-				const currentUserId = user._id; // Example user ID
+				const currentUserId = user?._id; // Example user ID
 				setHasLiked(postData.posts[0].likes.includes(currentUserId));
 				setHasDisliked(postData.posts[0].dislikes.includes(currentUserId));
 			}
