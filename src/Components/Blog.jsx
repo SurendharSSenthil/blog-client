@@ -25,6 +25,12 @@ function PostDetails() {
 	async function fetchPost() {
 		const token = localStorage.getItem('token');
 		const user = JSON.parse(localStorage.getItem('user'));
+
+		if (!token || !user) {
+			setError('Token or user data is missing.');
+			return; // Prevent further execution
+		}
+
 		setLoading(true); // Show loading state
 		try {
 			const response = await fetch(`${url}/post/post/${postId}`, {
@@ -33,22 +39,30 @@ function PostDetails() {
 				},
 			});
 			const data = await response.json();
+
+			if (!response.ok) {
+				throw new Error(data.message || 'Failed to fetch post');
+			}
+
 			if (data) {
 				const postData = data;
 				setPost(postData.posts[0]);
 				setComments(postData.comments || []);
 				setLikes(postData.posts[0].likes?.length || 0);
 				setDislikes(postData.posts[0].dislikes?.length || 0);
+
 				const currentUserId = user._id; // Example user ID
 				setHasLiked(postData.posts[0].likes.includes(currentUserId));
 				setHasDisliked(postData.posts[0].dislikes.includes(currentUserId));
 			}
 		} catch (err) {
+			console.error(err);
 			setError('Error loading the post data.');
 		} finally {
-			setLoading(false);
+			setLoading(false); // Hide loading state
 		}
 	}
+
 	// Fetch post data and comments
 	useEffect(() => {
 		fetchPost();
