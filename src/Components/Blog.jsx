@@ -42,7 +42,7 @@ function PostDetails() {
 				setLikes(postData.posts[0].likes?.length || 0);
 				setDislikes(postData.posts[0].dislikes?.length || 0);
 
-				const currentUserId = user?._id; // Example user ID
+				const currentUserId = user?._id;
 				setHasLiked(postData.posts[0].likes.includes(currentUserId));
 				setHasDisliked(postData.posts[0].dislikes.includes(currentUserId));
 			}
@@ -238,7 +238,7 @@ function PostDetails() {
 							className='text-white mb-4 text-justify'
 							dangerouslySetInnerHTML={{ __html: post.content }}
 						/>
-						{user?.role === 'A' && (
+						{user && user?.role === 'A' && (
 							<button
 								className='bg-violet-500 text-white px-4 py-2 rounded-lg my-2'
 								onClick={handleDelete}
