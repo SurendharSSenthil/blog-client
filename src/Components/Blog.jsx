@@ -62,9 +62,11 @@ function PostDetails() {
 	// Handle like action for post
 	const handleLike = async () => {
 		const token = localStorage.getItem('token');
+
 		if (!token) {
 			navigate('/auth');
 		}
+		const user = JSON.parse(localStorage.getItem('user'));
 		try {
 			const action = hasLiked ? 'unlike' : 'like';
 			const response = await fetch(`${url}/post/${action}`, {
@@ -73,7 +75,7 @@ function PostDetails() {
 					Authorization: `Bearer ${token}`,
 					'Content-Type': 'application/json',
 				},
-				body: JSON.stringify({ postId }),
+				body: JSON.stringify({ postId, userId: user._id }),
 			});
 
 			if (response.ok) {
@@ -100,6 +102,7 @@ function PostDetails() {
 		if (!token) {
 			navigate('/auth');
 		}
+		const user = JSON.parse(localStorage.getItem('user'));
 		try {
 			const action = hasDisliked ? 'like' : 'unlike';
 			const response = await fetch(`${url}/post/${action}`, {
@@ -108,7 +111,7 @@ function PostDetails() {
 					Authorization: `Bearer ${token}`,
 					'Content-Type': 'application/json',
 				},
-				body: JSON.stringify({ postId }),
+				body: JSON.stringify({ postId, userId: user._id }),
 			});
 
 			if (response.ok) {
