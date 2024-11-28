@@ -227,97 +227,111 @@ function PostDetails() {
 					<Spinner color='purple' size='xl' />
 				</div>
 			) : (
-				<div className='shadow-lg md:px-16 md:py-16 py-20 px-6 mx-auto'>
-					<img
-						src={post.imageUrl || 'https://picsum.photos/800/400'}
-						alt='Blog Image'
-						className='w-full h-60 object-fit rounded-lg'
-					/>
-					<div>
-						<h1 className='md:text-4xl text-2xl poppins font-semibold text-violet-500 text-center my-4'>
-							{post.title}
-						</h1>
+				<div className="shadow-lg w-full mx-auto md:px-16 md:py-16 py-10 px-6">
+				<img
+					src={post.imageUrl || 'https://picsum.photos/800/400'}
+					alt="Blog Image"
+					className="w-full h-auto object-cover rounded-lg"
+				/>
+				<div>
+					<h1 className="md:text-4xl text-2xl poppins font-semibold text-violet-500 text-center my-4">
+						{post.title}
+					</h1>
+					<div className="text-white mb-4 text-justify">
 						<p
-							className='text-white mb-4 text-justify'
-							dangerouslySetInnerHTML={{ __html: post.content }}
+							dangerouslySetInnerHTML={{
+								__html: post.content
+									.replace(
+										/<pre(.*?)>([\s\S]*?)<\/pre>/g,
+										`<pre class="overflow-x-auto bg-gray-700 p-3 rounded-md text-sm my-2">$2</pre>`
+									)
+									.replace(
+										/<img(.*?)src="(.*?)"(.*?)>/g,
+										`<img class="w-full h-auto rounded-md my-4" src="$2" $1 $3 />`
+									),
+							}}
 						/>
-						{user && user?.role === 'A' && (
-							<button
-								className='bg-violet-500 text-white px-4 py-2 rounded-lg my-2'
-								onClick={handleDelete}
-							>
-								Delete Post
-							</button>
-						)}
+					</div>
+					{user && user?.role === 'A' && (
+						<button
+							className="bg-violet-500 text-white px-4 py-2 rounded-lg my-2 hover:bg-violet-600 transition"
+							onClick={handleDelete}
+						>
+							Delete Post
+						</button>
+					)}
 
-						{/* Display likes and dislikes */}
-						<div className='flex items-center mb-4 space-x-4'>
-							<button
-								className={`flex items-center space-x-1 ${
-									hasLiked ? 'text-red-500' : 'text-gray-400'
-								}`}
-								onClick={handleLike}
-								disabled={loading}
-							>
-								<FaHeart />
-								<span>{likes} likes</span>
-							</button>
-							<button
-								className={`flex items-center space-x-1 ${
-									hasDisliked ? 'text-blue-500' : 'text-gray-400'
-								}`}
-								onClick={handleDislike}
-								disabled={loading}
-							>
-								<FaThumbsDown />
-								<span>{dislikes} dislikes</span>
-							</button>
-						</div>
+					{/* Display likes and dislikes */}
+					<div className="flex items-center mb-4 space-x-4">
+						<button
+							className={`flex items-center space-x-1 ${
+								hasLiked ? 'text-red-500' : 'text-gray-400'
+							} hover:text-red-400 transition`}
+							onClick={handleLike}
+							disabled={loading}
+						>
+							<FaHeart />
+							<span>{likes} likes</span>
+						</button>
+						<button
+							className={`flex items-center space-x-1 ${
+								hasDisliked ? 'text-blue-500' : 'text-gray-400'
+							} hover:text-blue-400 transition`}
+							onClick={handleDislike}
+							disabled={loading}
+						>
+							<FaThumbsDown />
+							<span>{dislikes} dislikes</span>
+						</button>
+					</div>
 
-						{/* Add comment */}
-						<div className='my-4'>
-							<textarea
-								value={newComment}
-								onChange={(e) => setNewComment(e.target.value)}
-								className='w-full p-2 rounded-lg bg-slate-800 text-white'
-								placeholder='Add a comment...'
-							/>
-							<button
-								className='bg-violet-500 text-white px-4 py-2 rounded-lg mt-2'
-								onClick={handleAddComment}
-								disabled={commentLoading}
-							>
-								{commentLoading ? 'Posting...' : 'Post Comment'}
-							</button>
-						</div>
+					{/* Add comment */}
+					<div className="my-4">
+						<textarea
+							value={newComment}
+							onChange={(e) => setNewComment(e.target.value)}
+							className="w-full p-2 rounded-lg bg-slate-800 text-white resize-none"
+							placeholder="Add a comment..."
+						/>
+						<button
+							className="bg-violet-500 text-white px-4 py-2 rounded-lg mt-2 hover:bg-violet-600 transition"
+							onClick={handleAddComment}
+							disabled={commentLoading}
+						>
+							{commentLoading ? 'Posting...' : 'Post Comment'}
+						</button>
+					</div>
 
-						{/* Display comments */}
-						<div className='bg-slate-800 p-4 rounded-lg'>
-							<h2 className='text-xl font-semibold text-violet-400 text-center mb-2'>
-								Comments
-							</h2>
-							{comments.length > 0 ? (
-								<ul>
-									{comments.map((comment) => (
-										<li key={comment[0]?._id} className='text-white mb-2'>
-											<div className='flex flex-row gap-2 items-center'>
-												<Avatar rounded />
-												<p className='text-gray-100 md:text-lg text-sm'>
+					{/* Display comments */}
+					<div className="bg-slate-800 p-4 rounded-lg">
+						<h2 className="text-xl font-semibold text-violet-400 text-center mb-2">
+							Comments
+						</h2>
+						{comments.length > 0 ? (
+							<ul className="space-y-4">
+								{comments.map((comment) => (
+									<li key={comment[0]?._id} className="text-white">
+										<div className="flex flex-row gap-2 items-center">
+											<Avatar rounded />
+											<div>
+												<p className="text-gray-100 md:text-lg text-sm break-words">
 													{comment?.res[0]?.content}
 												</p>
+												<small className="text-xs text-gray-400">
+													by {comment?.user[0]?.username || 'Unknown'}
+												</small>
 											</div>
-											<small className='text-xs text-gray-400'>
-												by {comment?.user[0]?.username || 'Unknown'}
-											</small>
-										</li>
-									))}
-								</ul>
-							) : (
-								<p className='text-gray-400'>No comments yet.</p>
-							)}
-						</div>
+										</div>
+									</li>
+								))}
+							</ul>
+						) : (
+							<p className="text-gray-400">No comments yet.</p>
+						)}
 					</div>
 				</div>
+			</div>
+
 			)}
 			<Footer />
 		</div>
