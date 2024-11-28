@@ -231,7 +231,7 @@ function PostDetails() {
 				<img
 					src={post.imageUrl || 'https://picsum.photos/800/400'}
 					alt="Blog Image"
-					className="w-full h-auto object-cover rounded-lg"
+					className="w-full h-60 object-cover rounded-lg"
 				/>
 				<div>
 					<h1 className="md:text-4xl text-2xl poppins font-semibold text-violet-500 text-center my-4">
@@ -245,10 +245,7 @@ function PostDetails() {
 										/<pre(.*?)>([\s\S]*?)<\/pre>/g,
 										`<pre class="overflow-x-auto bg-gray-700 p-3 rounded-md text-sm my-2">$2</pre>`
 									)
-									.replace(
-										/<img(.*?)src="(.*?)"(.*?)>/g,
-										`<img class="w-full h-auto rounded-md my-4" src="$2" $1 $3 />`
-									),
+									
 							}}
 						/>
 					</div>
