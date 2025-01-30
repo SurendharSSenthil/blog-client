@@ -92,7 +92,7 @@ function CreatePost() {
         <div className="w-full mx-auto bg-slate-900 overflow-hidden min-h-screen">
             <Header />
             <div className="shadow-lg md:px-16 md:py-6 p-6">
-                <h1 className="md:text-3xl text-2xl poppins font-semibold text-violet-500 text-center my-4">
+                <h1 className="md:text-3xl text-2xl poppins mt-10 font-semibold text-violet-500 text-center my-4">
                     New Blog Post
                 </h1>
 
