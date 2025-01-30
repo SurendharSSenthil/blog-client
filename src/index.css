@@ -1,15 +1,63 @@
+/* Tailwind imports */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 body {
-	font-family: sans-serif;
+    font-family: sans-serif;
 }
 
+/* Headings styling */
+h2 {
+    @apply text-2xl font-semibold mt-6 mb-4; /* Apply Tailwind styles */
+}
+
+h1 {
+    @apply text-4xl font-bold; /* Larger font size for h1 */
+}
+
+h3 {
+    @apply text-xl font-medium; /* Smaller font size for h3 */
+}
+
+p {
+    @apply text-base leading-relaxed; /* Paragraph text size and line height */
+}
+
+/* Custom Fonts */
 .poppins {
-	font-family: 'Poppins', sans-serif;
+    font-family: "Poppins", sans-serif;
 }
 
-.particles-js {
-	background-color: transparent !important;
+.ql-font-serif {
+    font-family: "Times New Roman", serif;
+}
+
+.ql-font-monospace {
+    font-family: "Courier New", monospace;
+}
+
+.ql-font-sans {
+    font-family: Arial, sans-serif;
+}
+
+/* Quill editor font sizes */
+.ql-size-small {
+    font-size: 12px;
+}
+
+.ql-size-normal {
+    font-size: 16px;
+}
+
+.ql-size-large {
+    font-size: 20px;
+}
+
+.ql-size-huge {
+    font-size: 32px;
+}
+
+.ql-editor {
+    @apply text-base leading-relaxed; /* Quill editor styling */
 }
